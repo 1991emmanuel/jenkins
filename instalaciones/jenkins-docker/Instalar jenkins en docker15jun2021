@@ -1,0 +1,73 @@
+# Instalar docker:
+sudo apt update
+sudo apt install docker.io
+docker --version
+sudo systemctl enable docker
+sudo apt  install docker-compose
+sudo systemctl enable --now docker
+systemctl status  docker
+sudo usermod -aG docker $USER
+id $USER
+newgrp docker
+docker version
+
+
+##Instalar firewall y abrir el puerto 8080
+----------------------------------------------- 
+   Nota: con centos:
+   
+    sudo firewalld-cmd status
+sudo dnf install firewalld
+sudo firewall-cmd --state
+sudo firewall-cmd --get-active-zones
+sudo firewall-cmd --zone=public --list-services
+sudo firewall-cmd --zone=public --list-ports
+sudo firewall-cmd --zone=public --add-port=8080/tcp
+sudo firewall-cmd --zone=docker --add-port=8080/tcp
+sudo firewall-cmd --reload
+   
+  Notas para debian o ubuntu
+   
+sudo apt install ufw
+sudo ufw allow ssh
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 80
+sudo ufw allow 8080
+sudo ufw allow 50000
+sudo ufw enable
+sudo ufw status numbered
+   
+# Ejecutar la imagen de jenkins
+   docker run -d --name jenkins -v jenkins_home:/docker -p 8080:8080 jenkins/jenkins:lts
+   
+docker inspect jenkins
+verificar la ip que indica, en este caso:   172.17.0.2
+curl 172.17.0.2:8080
+   
+   ## Muestra algo parecido a:
+   <html><head><meta http-equiv='refresh' content='1;url=/login?from=%2F'/><script>window.location.replace('/login?from=%2F');</script></head><body style='background-color:white; color:white;'>
+
+
+Authentication required
+<!--
+-->
+
+</body></html>       
+
+##Necesitamos entrar al contenedor de jenkins para averiguar: initialAdminPassword
+   
+   docker exec -it jenkins /bin/bash
+   
+   ua vez dentro del contenedor, tecleamos:
+   
+   cat /var/jenkins_home/secrets/initialAdminPassword
+En este caso muestra: 3ccf95864466452d9227c87188aefac4
+
+Ese codigo lo necesitamos para empezar a configurar desde la pagina web de jenkins
+   
+
+   
+   
+   
+   
